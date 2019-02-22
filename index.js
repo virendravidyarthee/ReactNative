@@ -1,21 +1,23 @@
-import { Navigation } from "react-native-navigation";
+import {Navigation} from "react-native-navigation";
 import Login from './src/containers/Login';
 import Success from "./src/containers/Success";
+import {Provider} from 'react-redux'
+import Store from './src/configureStore'
 
-
-Navigation.registerComponent(`navigation.assignment.login`, () => Login);
+Navigation.registerComponentWithRedux(`navigation.assignment.login`, () => Login, Provider, Store);
 Navigation.registerComponent(`navigation.assignment.success`, () => Success);
 
 Navigation.events().registerAppLaunchedListener(() => {
     Navigation.setRoot({
         root: {
             stack: {
-                children:[{
-                    component:{
+                id: 'assignment-stack',
+                children: [{
+                    component: {
                         name: "navigation.assignment.login",
-                        options:{
-                            topBar:{
-                                title:{
+                        options: {
+                            topBar: {
+                                title: {
                                     text: "Login"
                                 }
                             }

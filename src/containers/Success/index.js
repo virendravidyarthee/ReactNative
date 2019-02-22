@@ -3,6 +3,16 @@ import {StyleSheet, Text, View} from 'react-native';
 
 export default class Success extends Component<Props> {
 
+    static options(){
+        return {
+            topBar: {
+                title: {
+                    text: 'Thank you'
+                }
+            }
+        }
+    }
+
     render() {
         return (
             <View style={styles.container}>

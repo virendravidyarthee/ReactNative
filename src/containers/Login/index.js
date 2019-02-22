@@ -1,67 +1,14 @@
 import React, {Component} from 'react'
-import {StyleSheet, TextInput, View, Button, ActivityIndicator} from 'react-native';
+import {StyleSheet, TextInput, View, Button, ActivityIndicator, Text} from 'react-native';
+import {connect} from 'react-redux'
 import TextInputLayout from "../../components/TextInputLayout";
-import {Navigation} from "react-native-navigation";
+import {getEmail, isLoading, getPassword} from "./reducer";
+import {setEmail, setPassword, logUserIn} from "./actions";
 
-export default class Login extends Component<Props> {
-    state = {};
-
-    onPressLogin = () => {
-        this.showLoader();
-        setTimeout(() => {
-            if (this.isCorrectCredential()) {
-                this.showSuccessPage();
-            } else {
-                alert('Incorrect credentials')
-            }
-            this.hideLoader()
-        }, 2000);
-
-    };
-
-    isCorrectCredential = (): boolean => {
-        return this.state.email === 'bill_gates@microsoft.com' && this.state.password === '123456'
-    };
-
-    showLoader = () => {
-        this.setState({
-            isLoading: true
-        })
-    };
-
-    hideLoader = () => {
-        this.setState({
-            isLoading: false
-        })
-    };
-
-    showSuccessPage = () => {
-        Navigation.push(this.props.componentId, {
-            component: {
-                name: 'navigation.assignment.success',
-                passProps: {
-                    email: this.state.email
-                },
-                options: {
-                    topBar: {
-                        title: {
-                            text: 'Thank you'
-                        }
-                    }
-                }
-            }
-        });
-    };
-
-    componentDidMount() {
-        this.setState({
-            isLoading: false,
-            email: '',
-            password: ''
-        })
-    }
+class Login extends Component<Props> {
 
     render() {
+        const {dispatch, email, password, isLoading} = this.props
         return (
             <View style={styles.container}>
                 <TextInputLayout
@@ -69,27 +16,30 @@ export default class Login extends Component<Props> {
                     <TextInput
                         style={styles.input}
                         placeholder={'Email'}
-                        onChangeText={value => this.setState({
-                            email: value.trim()
-                        })}/>
+                        onChangeText={value => {
+                            dispatch(setEmail(value.trim()))
+                        }}/>
                 </TextInputLayout>
                 <TextInputLayout
                     style={styles.textInputLayout}>
                     <TextInput
                         style={styles.input}
+                        secureTextEntry={true}
                         placeholder={'Password'}
-                        onChangeText={value => this.setState({
-                            password: value.trim()
-                        })}/>
+                        onChangeText={value => {
+                            dispatch(setPassword(value.trim()))
+                        }}/>
                 </TextInputLayout>
                 <View style={styles.buttonContainer}>
                     <Button
                         title='Login'
-                        onPress={this.onPressLogin}
-                        disabled={!this.state.email || !this.state.password}/>
+                        onPress={() => {
+                            dispatch(logUserIn(email, password))
+                        }}
+                        disabled={!email || !password}/>
                 </View>
                 <ActivityIndicator
-                    style={{opacity: this.state.isLoading ? 1 : 0}}  //https://github.com/facebook/react-native/issues/9023
+                    style={{opacity: isLoading ? 1 : 0}}  //https://github.com/facebook/react-native/issues/9023
                     animating={true}/>
             </View>
         )
@@ -119,3 +69,11 @@ const styles = StyleSheet.create({
         marginTop: 20
     }
 });
+
+const mapStateToProps = state => ({
+    email: getEmail(state),
+    password: getPassword(state),
+    isLoading: isLoading(state)
+});
+
+export default connect(mapStateToProps)(Login);

@@ -1,3 +1,5 @@
+//Credits: https://github.com/zbtang/React-Native-TextInputLayout
+
 'use strict';
 import React, { Component } from 'react';
 import { StyleSheet, View, Animated, Platform } from 'react-native';
