@@ -1,5 +1,4 @@
 # ReactNative
-Assignment project
 
 To run the project:
 1. Clone the project into your local directory.
